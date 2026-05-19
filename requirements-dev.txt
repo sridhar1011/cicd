@@ -1,0 +1,26 @@
+# requirements-dev.txt
+# All CI/CD quality-gate tools used in local-ci.sh / local-ci.ps1
+
+# ── Testing ──────────────────────────────────────────────────────────────────
+pytest==8.2.2           # Test runner
+pytest-cov==5.0.0       # Coverage plugin for pytest
+
+# ── Formatting ───────────────────────────────────────────────────────────────
+black==24.4.2            # Opinionated code formatter
+isort==5.13.2            # Import sorter
+
+# ── Linting ──────────────────────────────────────────────────────────────────
+flake8==7.1.0            # Style + error linter
+pylint==3.2.3            # Deep static analysis linter (optional alternative)
+
+# ── Type checking ─────────────────────────────────────────────────────────────
+mypy==1.10.1             # Static type checker
+
+# ── Security scanning ────────────────────────────────────────────────────────
+bandit==1.7.9            # Security issue scanner for Python code
+
+# ── Dependency vulnerability scanning ────────────────────────────────────────
+pip-audit==2.7.3         # Scans installed packages against CVE databases
+
+# ── Build / packaging ────────────────────────────────────────────────────────
+build==1.2.1             # PEP 517 build frontend (python -m build)

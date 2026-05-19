@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+app/__init__.py
+app/main.py
+python_cicd_demo.egg-info/PKG-INFO
+python_cicd_demo.egg-info/SOURCES.txt
+python_cicd_demo.egg-info/dependency_links.txt
+python_cicd_demo.egg-info/entry_points.txt
+python_cicd_demo.egg-info/top_level.txt
+tests/test_main.py

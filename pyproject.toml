@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# ── Project metadata ──────────────────────────────────────────────────────────
+[project]
+name = "python-cicd-demo"
+version = "1.0.0"
+description = "Simple calculator used to teach local CI/CD quality gates"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Your Name", email = "you@example.com" }]
+
+[project.scripts]
+calculator = "app.main:main"
+
+# ── Black (code formatter) ────────────────────────────────────────────────────
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+# ── isort (import sorter) ─────────────────────────────────────────────────────
+[tool.isort]
+profile = "black"          # Makes isort compatible with Black's style
+line_length = 88
+
+# ── mypy (type checker) ───────────────────────────────────────────────────────
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+
+# ── pytest + coverage ─────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80            # Build fails if coverage drops below 80 %
