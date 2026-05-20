@@ -1,112 +1,58 @@
-#!/usr/bin/env bash
-# ============================================================
-#  local-ci.sh  –  Python Local CI/CD Quality Gate Runner
-#  Compatible: macOS / Linux / WSL
-# ============================================================
-# Usage:
-#   chmod +x local-ci.sh
-#   ./local-ci.sh
-# ============================================================
+#!/bin/bash
 
-set -euo pipefail   # Exit immediately on error, treat unset vars as errors
+set -e
 
-# ── Colour helpers ────────────────────────────────────────────────────────────
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
-BOLD='\033[1m'
-RESET='\033[0m'
+echo "Starting Python CI/CD Pipeline"
 
-PASS="${GREEN}✔ PASS${RESET}"
-FAIL="${RED}✘ FAIL${RESET}"
+rm -rf venv
 
-# ── Helper: print stage banner ────────────────────────────────────────────────
-stage() {
-    local number="$1"
-    local title="$2"
-    echo ""
-    echo -e "${CYAN}${BOLD}════════════════════════════════════════${RESET}"
-    echo -e "${CYAN}${BOLD}  STAGE ${number}: ${title}${RESET}"
-    echo -e "${CYAN}${BOLD}════════════════════════════════════════${RESET}"
-}
+python3 -m venv venv
 
-# ── Helper: run command, print result, exit on failure ───────────────────────
-run() {
-    local description="$1"
-    shift
-    echo -e "${YELLOW}▶ ${description}${RESET}"
-    echo -e "  Command: $*"
-    echo ""
-    if "$@"; then
-        echo -e "\n${PASS}  ${description}"
-    else
-        echo -e "\n${FAIL}  ${description}"
-        echo -e "${RED}Pipeline stopped. Fix the issue above and re-run.${RESET}"
-        exit 1
-    fi
-}
+source venv/bin/activate
 
-# ══════════════════════════════════════════════════════════════════════════════
-echo ""
-echo -e "${BOLD}╔══════════════════════════════════════════╗${RESET}"
-echo -e "${BOLD}║   Python Local CI/CD Pipeline – START   ║${RESET}"
-echo -e "${BOLD}╚══════════════════════════════════════════╝${RESET}"
-echo ""
+python3 -m pip install --upgrade pip
 
-# ── STAGE 1: Code formatting check (Black) ────────────────────────────────────
-stage 1 "Code Formatting Check  (black)"
-run "Black formatting check" \
-    python -m black --check --diff app/ tests/
+python3 -m pip install -r requirements.txt
 
-# ── STAGE 2: Import sorting check (isort) ────────────────────────────────────
-stage 2 "Import Sorting Check  (isort)"
-run "isort import sorting check" \
-    python -m isort --check-only --diff app/ tests/
+python3 -m pip install \
+black \
+isort \
+flake8 \
+mypy \
+pytest \
+pytest-cov \
+bandit \
+pip-audit \
+build
 
-# ── STAGE 3: Linting (flake8) ────────────────────────────────────────────────
-stage 3 "Linting  (flake8)"
-run "Flake8 lint check" \
-    python -m flake8 app/ tests/
+echo "STAGE 1 - BLACK"
+python3 -m black --check --diff app/ tests/
 
-# ── STAGE 4: Type Checking (mypy) ────────────────────────────────────────────
-stage 4 "Type Checking  (mypy)"
-run "mypy strict type check" \
-    python -m mypy app/
+echo "STAGE 2 - ISORT"
+python3 -m isort --check-only --diff app/ tests/
 
-# ── STAGE 5: Unit Tests (pytest) ─────────────────────────────────────────────
-stage 5 "Unit Tests  (pytest)"
-run "pytest unit tests" \
-    python -m pytest tests/ -v
+echo "STAGE 3 - FLAKE8"
+python3 -m flake8 app/ tests/
 
-# ── STAGE 6: Test Coverage (pytest-cov) ──────────────────────────────────────
-stage 6 "Test Coverage  (pytest-cov)"
-run "Coverage check (min 80%)" \
-    python -m pytest tests/ \
-        --cov=app \
-        --cov-report=term-missing \
-        --cov-fail-under=80
+echo "STAGE 4 - MYPY"
+python3 -m mypy app/
 
-# ── STAGE 7: Security Scan (bandit) ──────────────────────────────────────────
-stage 7 "Security Scan  (bandit)"
-run "Bandit security scan" \
-    python -m bandit -r app/ -ll
+echo "STAGE 5 - PYTEST"
+python3 -m pytest tests/ -v
 
-# ── STAGE 8: Dependency Vulnerability Scan (pip-audit) ───────────────────────
-stage 8 "Dependency Vulnerability Scan  (pip-audit)"
-run "pip-audit dependency scan" \
-    python -m pip_audit
+echo "STAGE 6 - COVERAGE"
+python3 -m pytest tests/ \
+--cov=app \
+--cov-report=term-missing \
+--cov-fail-under=80
 
-# ── STAGE 9: Build / Package Validation (build) ──────────────────────────────
-stage 9 "Build / Package Validation  (build)"
-run "python -m build package check" \
-    python -m build --outdir dist/
+echo "STAGE 7 - BANDIT"
+python3 -m bandit -r app/ -ll
 
-# ══════════════════════════════════════════════════════════════════════════════
-echo ""
-echo -e "${BOLD}╔══════════════════════════════════════════╗${RESET}"
-echo -e "${GREEN}${BOLD}║   All Stages PASSED – Pipeline GREEN ✔  ║${RESET}"
-echo -e "${BOLD}╚══════════════════════════════════════════╝${RESET}"
-echo ""
-echo -e "  Your code is ready to push to GitHub / Jenkins!"
-echo ""
+echo "STAGE 8 - PIP AUDIT"
+python3 -m pip_audit
+
+echo "STAGE 9 - BUILD"
+python3 -m build --outdir dist/
+
+echo "PIPELINE SUCCESS"
