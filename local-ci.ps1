@@ -50,7 +50,9 @@ fi
 source venv/bin/activate
 
 # ── Install Dependencies ───────────────────────────────────
-pip install --upgrade pip
+python3 -m pip install --upgrade pip
+python3 -m pip install pip==25.3
+
 
 pip install -r requirements.txt
 
