@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+==
 
 echo "Starting Python CI/CD Pipeline"
 
