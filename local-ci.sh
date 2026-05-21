@@ -57,6 +57,4 @@ python3 -m build --outdir dist/
 
 echo "PIPELINE SUCCESS"
 
-echo "STAGE 10 - BUILD DOCKER IMAGE"
 
-docker build -t python-cicd-demo .
