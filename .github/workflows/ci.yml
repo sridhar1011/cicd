@@ -1,0 +1,48 @@
+name: Python CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Install Dev Tools
+      run: |
+        pip install black flake8 pytest
+
+    - name: Run Black
+      run: black . --check
+
+    - name: Run Flake8
+      run: flake8 .
+
+    - name: Run Tests
+      run: pytest
+
+    - name: Build Docker Image
+      run: docker build -t python-cicd-demo .
+
+    - name: Run Trivy Scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: python-cicd-demo
+        format: table
+        exit-code: 0
