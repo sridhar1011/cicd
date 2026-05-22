@@ -8,6 +8,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN pip install black isort flake8 mypy pytest pytest-cov bandit pip-audit build
+RUN pip install black isort flake8 mypy pytest pytest-cov bandit pip-audit
+
+EXPOSE 8000
 
 CMD ["python", "app/main.py"]

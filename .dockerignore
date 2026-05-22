@@ -1,7 +1,6 @@
 venv/
 __pycache__/
-.pytest_cache/
-.git/
-dist/
-build/
 *.pyc
+.git
+.github
+.trivyignore

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+11111
+
 set -e
 
 echo "Starting Python CI/CD Pipeline"
@@ -56,3 +58,5 @@ echo "STAGE 9 - BUILD"
 python3 -m build --outdir dist/
 
 echo "PIPELINE SUCCESS"
+
+
