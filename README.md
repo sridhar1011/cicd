@@ -399,7 +399,7 @@ FAIL Required test coverage of 80% not reached. Total coverage: 45%
 Creates both a `.tar.gz` (source dist) and a `.whl` (wheel) file.
 
 ```bash
-python -m build --outdir dist/
+ 
 ```
 
 **Expected pass output:**
